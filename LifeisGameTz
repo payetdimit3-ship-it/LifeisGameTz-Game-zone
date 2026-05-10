@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeisGameTz | Official Store</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400;700;900&display=swap');
+        body { background-color: #050505; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .font-gamer { font-family: 'Orbitron', sans-serif; }
+        
+        .nav-fixed { background: #0a0a0a; border-bottom: 2px solid #ff0000; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; height: 70px; display: flex; align-items: center; }
+
+        #sideMenu { position: fixed; top: 0; left: -320px; width: 310px; height: 100%; background: #0f0f0f; z-index: 2000; transition: 0.4s; border-right: 2px solid #ff0000; overflow-y: auto; }
+        #sideMenu.active { left: 0; }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1500; display: none; }
+
+        .hero-video-wrapper { position: relative; height: 50vh; width: 100%; overflow: hidden; margin-top: 70px; z-index: 1; background: #000; }
+        #videoContainer { position: absolute; inset: 0; width: 100%; height: 100%; }
+        #videoContainer iframe { width: 100%; height: 100%; transform: scale(1.4); pointer-events: none; opacity: 0.6; }
+
+        .game-card { background: #111; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: 0.3s; position: relative; }
+        .game-card:hover { transform: translateY(-5px); border-color: #ff0000; }
+        
+        .badge-type { position: absolute; top: 8px; right: 8px; font-size: 7px; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; z-index: 10; color: white; }
+        .menu-trigger { background: #ff0000; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" class="menu-overlay" onclick="toggleMenu()"></div>
+
+    <div id="paymentModal" class="modal-overlay">
+        <div class="bg-[#111] p-8 rounded-2xl border border-red-600 max-w-sm w-full">
+            <h3 class="font-gamer text-red-600 text-center mb-4 uppercase italic text-sm">Maelekezo ya Malipo</h3>
+            <div class="space-y-3 text-[11px] mb-6 text-center">
+                <div class="p-3 bg-black rounded border border-gray-800">
+                    <p class="text-gray-500 uppercase text-[8px]">Airtel Money</p>
+                    <p class="font-black text-white text-sm">0786 095 758</p>
+                    <p class="text-red-600 font-bold uppercase">Amina Mwinyi</p>
+                </div>
+                <div class="p-3 bg-black rounded border border-gray-800">
+                    <p class="text-yellow-500 uppercase text-[8px] font-bold">LIPA NAMBA (YAS)</p>
+                    <p class="font-black text-white text-sm">19838445</p>
+                    <p class="text-red-600 font-bold uppercase">Rashid Khamis</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <button onclick="openPinModal()" class="w-full bg-red-600 text-white py-3 rounded font-black uppercase text-[10px]">Tayari Nina Password</button>
+                <a id="waLink" href="https://wa.me/255786095758" target="_blank" class="w-full bg-green-500 text-black text-center py-3 rounded font-black uppercase text-[10px]">Tuma Screenshot WhatsApp</a>
+                <button onclick="closeModals()" class="text-gray-500 text-[10px] uppercase font-bold">Funga</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pinModal" class="modal-overlay">
+        <div class="bg-[#111] p-8 rounded-2xl border border-red-600 max-w-xs w-full text-center">
+            <h3 class="font-gamer text-red-600 mb-4 uppercase italic">Lock System</h3>
+            <input type="password" id="pinInput" placeholder="Password hapa..." class="w-full bg-black border border-gray-800 p-3 rounded mb-4 text-center outline-none text-white font-bold">
+            <button onclick="verifyPin()" class="w-full bg-red-600 py-2 rounded font-black uppercase text-xs">Unlock</button>
+            <button onclick="closeModals()" class="mt-4 block w-full text-[9px] text-gray-500 uppercase">Ghairi</button>
+        </div>
+    </div>
+    <!-- Side Menu - Nimeongeza Admin Button hapa -->
+    <div id="sideMenu" class="p-6">
+        <div class="flex justify-between items-center mb-6">
+            <img src="https://i.postimg.cc/HW4rtZW0/255-786-095-758-20260409-221854.jpg" class="w-14 h-14 rounded-lg border border-red-600">
+            <i class="fas fa-times text-xl cursor-pointer text-red-600" onclick="toggleMenu()"></i>
+        </div>
+        <h2 class="font-gamer text-[10px] text-red-600 mb-4 uppercase">LifeisGameTz</h2>
+        
+        <!-- Google na AI Assistant Buttons -->
+        <div class="mb-6 p-4 bg-white/5 rounded-xl border border-white/10 text-center space-y-3">
+            
+            <!-- Google Account Button (iliyopo) -->
+            <button onclick="alert('Google Login coming soon!')" 
+                    class="w-full text-[10px] font-bold uppercase text-white hover:text-red-600 transition flex items-center justify-center gap-2">
+                <i class="fab fa-google text-red-600"></i> 
+                Google Account
+            </button>
+
+            <!-- AI Assistant Button - Mpya -->
+            <button onclick="openAiAssistant()" 
+                    class="w-full bg-gradient-to-r from-purple-600 to-red-600 text-white py-3 rounded-2xl font-bold flex items-center justify-center gap-2 hover:from-purple-700 hover:to-red-700 transition">
+                <i class="fas fa-robot"></i> 
+                AI Assistant (Support)
+            </button>
+        </div>
+
+        <nav class="flex flex-col gap-4 text-[11px] font-black uppercase italic mb-8 border-b border-white/5 pb-6">
+            <button onclick="renderStoreItems()" class="text-left hover:text-yellow-400">
+    <i class="fas fa-store mr-2"></i> Store
+</button>
+            <button onclick="renderStore('Mobile')" class="text-left hover:text-red-600"><i class="fas fa-mobile-alt mr-2"></i> Game Mobile</button>
+            <button onclick="renderStore('PC')" class="text-left hover:text-red-600"><i class="fas fa-desktop mr-2"></i> PC Gaming</button>
+            <button onclick="renderStore('Tools')" class="text-left hover:text-red-600 text-blue-400"><i class="fas fa-download mr-2"></i> Downloads</button>
+        </nav>
+
+        <!-- ADMIN BUTTON - Imewekwa hapa -->
+        <button onclick="openAdminDashboard()" class="mt-6 w-full bg-red-600/20 hover:bg-red-600/40 border border-red-600 text-red-600 py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2">
+            <i class="fas fa-crown"></i> ADMIN DASHBOARD
+        </button>
+
+        <div class="space-y-4 mt-8">
+            <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Community</p>
+            <a href="https://chat.whatsapp.com/LUZa7EWfCqyFepz8wsTkrG" target="_blank" class="flex items-center gap-3 text-[11px] font-black uppercase italic text-green-500">
+                <i class="fab fa-whatsapp text-lg"></i> WhatsApp Group
+            </a>
+        </div>
+    </div>
+
+    <nav class="nav-fixed px-4">
+        <div class="max-w-7xl mx-auto w-full flex items-center justify-between">
+            <div class="menu-trigger" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+            <div class="flex-1 max-w-sm mx-4 relative">
+                <input type="text" id="searchInput" onkeyup="searchGame()" placeholder="Tafuta game hapa..." class="w-full bg-[#1a1a1a] border border-gray-800 px-10 py-2.5 rounded-full text-xs text-white outline-none focus:border-red-600">
+                <i class="fa fa-search absolute left-4 top-3.5 text-gray-500 text-[10px]"></i>
+            </div>
+            <div class="font-gamer text-red-600 text-sm font-black italic">LifeisGameTz</div>
+        </div>
+    </nav>
+
+    <header class="hero-video-wrapper">
+        <div id="videoContainer"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"></div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div id="catTitle" class="text-xl font-gamer mb-8 border-l-4 border-red-600 pl-4 uppercase italic">Store Collection</div>
+        <div id="gamesGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+    </main>
+
+    <!-- ==================== ADMIN DASHBOARD HTML ==================== -->
+    <div id="adminModal" class="modal-overlay">
+        <div class="bg-[#0a0a0a] w-full max-w-4xl max-h-[95vh] rounded-3xl border border-red-600 overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-gray-800">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-crown text-red-600 text-2xl"></i>
+                    <h2 class="font-gamer text-2xl text-red-600">ADMIN DASHBOARD</h2>
+                </div>
+                <button onclick="closeAdminModal()" class="text-3xl text-gray-400 hover:text-white">×</button>
+            </div>
+
+            <div class="flex border-b border-gray-800 bg-[#111]">
+                <button onclick="switchTab(0)" class="tab-btn active px-6 py-4 font-bold text-sm text-red-600" data-tab="0">🎮 Manage Games</button>
+                <button onclick="switchTab(1)" class="tab-btn px-6 py-4 font-bold text-sm" data-tab="1">➕ Add New Game</button>
+                <button onclick="switchTab(2)" class="tab-btn px-6 py-4 font-bold text-sm" data-tab="2">🔑 Passwords</button>
+                <button onclick="switchTab(3)" class="tab-btn px-6 py-4 font-bold text-sm" data-tab="3">🧠 AI Assistant</button>
+                <button onclick="switchTab(4)" class="tab-btn px-6 py-4 font-bold text-sm" data-tab="4">
+    🛒 Store Manager
+</button>
+            </div>
+
+            <div class="flex-1 overflow-auto p-6" id="tabContent">
+                <div id="tab0">
+                    <input id="searchAdmin" placeholder="Tafuta game..." class="w-full bg-black border border-gray-700 p-3 rounded-2xl mb-6 outline-none" onkeyup="filterAdminGames()">
+                    <div id="adminGamesList" class="space-y-3"></div>
+                </div>
+                <div id="tab1" class="hidden">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input id="newName" placeholder="Jina la Game" class="bg-black border border-gray-700 p-4 rounded-2xl">
+                        <input id="newPrice" type="number" placeholder="Bei (TZS)" class="bg-black border border-gray-700 p-4 rounded-2xl">
+                        <select id="newCat" class="bg-black border border-gray-700 p-4 rounded-2xl">
+                            <option value="Mobile">Mobile</option>
+                            <option value="PC">PC</option>
+                            <option value="Tools">Tools</option>
+                        </select>
+                        <input id="newImg" placeholder="Image URL" class="bg-black border border-gray-700 p-4 rounded-2xl">
+                        <input id="newLink" placeholder="Download Link" class="bg-black border border-gray-700 p-4 rounded-2xl col-span-2">
+                    </div>
+                    <button onclick="addNewGame()" class="mt-6 w-full bg-red-600 py-4 rounded-2xl font-black text-lg">ONGEZA GAME</button>
+                </div>
+                <div id="tab2" class="hidden">
+                    <button onclick="generateNewPin()" class="mb-6 bg-green-600 px-6 py-3 rounded-2xl font-bold">Tengeneza PIN Mpya</button>
+                    <div id="pinsList" class="space-y-2 text-lg font-mono"></div>
+                </div>
+                <div id="tab3" class="hidden">
+
+    <div id="adminAiChat" class="h-96 bg-black/70 rounded-2xl p-4 overflow-y-auto mb-4 flex flex-col"></div>
+
+    <div class="flex gap-2">
+        <input id="adminAiInput"
+               type="text"
+               placeholder="Andika maagizo yako hapa..."
+               class="flex-1 bg-[#1a1a1a] border border-gray-700 p-4 rounded-2xl outline-none">
+
+        <button onclick="sendAiCommand()"
+                class="bg-red-600 px-8 rounded-2xl font-black">
+            Tuma
+        </button>
+    </div>
+
+</div>
+
+<!-- TAB 4 - STORE MANAGER -->
+<div id="tab4" class="hidden">
+    <h2 class="text-yellow-400 font-bold mb-6 text-xl">🛒 Store ya Biashara (Add Products)</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input id="sName" placeholder="Jina la bidhaa" 
+               class="bg-black border border-gray-700 p-4 rounded-2xl outline-none">
+        
+        <input id="sPrice" placeholder="Bei (TZS)" 
+               class="bg-black border border-gray-700 p-4 rounded-2xl outline-none">
+        
+        <input id="sImg" placeholder="Image URL" 
+               class="bg-black border border-gray-700 p-4 rounded-2xl outline-none col-span-2">
+        
+        <input id="sLink" placeholder="WhatsApp / Contact Link" 
+               class="bg-black border border-gray-700 p-4 rounded-2xl outline-none col-span-2">
+    </div>
+
+    <button onclick="addStore()" 
+            class="mt-6 w-full bg-yellow-500 hover:bg-yellow-600 text-black py-4 rounded-2xl font-black text-lg transition">
+        ➕ ONGEZA BIDHAA
+    </button>
+
+    <div class="mt-8">
+        <h3 class="text-yellow-400 font-bold mb-3">Bidhaa Zilizopo</h3>
+        <div id="storeAdminList" class="space-y-3"></div>
+    </div>
+</div>
+<!-- ==================== AI SUPPORT ASSISTANT MODAL - ILIYOREKEBISHWA ==================== -->
+<div id="aiModal" class="modal-overlay">
+    <div class="bg-[#111] w-full max-w-lg rounded-3xl border border-purple-600 overflow-hidden flex flex-col h-[85vh]">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-gray-800 flex justify-between items-center bg-black">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-robot text-2xl text-purple-500"></i>
+                <h2 class="font-gamer text-xl text-purple-500">AI SUPPORT ASSISTANT</h2>
+            </div>
+            <button onclick="closeAiModal()" class="text-3xl text-gray-400 hover:text-white">×</button>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="aiChat" class="flex-1 p-4 overflow-y-auto bg-black/90 space-y-4 text-sm"></div>
+
+        <!-- Input + Send Button - Iliyoboreshwa kwa simu -->
+        <div class="p-4 border-t border-gray-800 bg-[#0a0a0a]">
+            <div class="flex gap-2">
+                <input id="aiInput" 
+                       type="text" 
+                       placeholder="Andika maagizo yako hapa..." 
+                       class="flex-1 bg-[#1a1a1a] border border-gray-700 p-4 rounded-2xl outline-none text-white text-base">
+                
+                <button onclick="sendAiMessage()" 
+                        class="bg-purple-600 hover:bg-purple-700 px-6 py-4 rounded-2xl font-bold text-white flex-shrink-0">
+                    Tuma
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        // ====================== HERO VIDEO IDS ======================
+        const videoIds = [
+            // Video zako mpya
+            "WdJub3Kz2wI",      // Tom Clancy Ghost Recon
+            "ssrNcwxALS4",      // Assassin’s Creed Valhalla
+            "y-9_d3IT_yA",      // Ghost Recon
+            "i3IsLrPeZG8",      // Call of Duty Modern Warfare 3
+            "Lq594XmpPBg",      // Horizon Forbidden West
+            "FKtaOY9lMvM",      // Days Gone
+            "hfJ4Km46A-0",      // God of War Ragnarok
+            "eaW0tYpxyp0",      // Red Dead Redemption
+            "vhII1qlcZ4E",      // The Last of Us Part 2
+            "8a-EObAhYrg",      // Detroit Become Human
+            "1O6Qstncpnc",      // Hogwarts Legacy
+            "LVqxMCZ3u6k",      // Hitman
+            "rXMX4YJ7Lks",      // Sekiro Shadows Die Twice
+            "nq1M_Wc4FIc",      // Marvel’s Spider-Man 2
+            "OhHvHrDBru8",      // John Wick
+            "WdJub3Kz2wI",
+            "ssrNcwxALS4",
+            "y-9_d3IT_yA",
+            "i3IsLrPeZG8",
+            "Lq594XmpPBg",
+            "FKtaOY9lMvM"
+        ];
+            let currentVid = 0;
+
+        function updateHero() {
+            const id = videoIds[currentVid];
+            document.getElementById('videoContainer').innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}" frameborder="0"></iframe>`;
+            currentVid = (currentVid + 1) % videoIds.length;
+        }
+        setInterval(updateHero, 15000);
+        window.onload = updateHero;
+        // ====================== DATA ======================
+        let games = [ /* Nakili games zako zote hapa - zimewekwa sawa na ulizokuwa nazo */ 
+            { name: "Aethersx2 Emulator", price: "FREE", cat: "Tools", img: "https://i.postimg.cc/8C2C8yMc/wp13885815-ps2-4k-wallpapers.jpg", link: "https://aethersx2.net/download-android-apk-v1-5-3668/" },
+            { name: "PS2 BIOS Setup", price: "FREE", cat: "Tools", img: "https://i.postimg.cc/0yLvrzj2/7deef150-bb96-417a-bd2b-2e4657e03056.webp", link: "https://aethersx2.net/ps2-bios/" },
+            { name: "Winlator Emulator", price: "FREE", cat: "Tools", img: "https://i.postimg.cc/XNmGZYFg/wp4060605-win-wallpapers.jpg", link: "https://github.com/brunodev85/winlator" },
+            { name: "Full Package PS2", price: "FREE", cat: "Tools", img: "https://i.postimg.cc/pLg9xXt5/wp13886043-ps2-4k-wallpapers.jpg", link: "https://drive.google.com/drive/mobile/folders/1D9WPT6TZVQgdzfUv-_h6bkfGf0kD9WUY" },
+             { name: "Alan Wake", price: 15000, cat: "PC", img: "https://i.postimg.cc/yxsS8VkF/Gj-Oa-W8s-alan-wake-wallpaper.jpg", link: "https://datanodes.to/3xc4owv4noz0/Alan-Wake.rar" },
+            { name: "Blur", price: 15000, cat: "PC", img: "https://i.postimg.cc/nzkKDHCv/wp6637364-blur-game-wallpapers.jpg", link: "https://datanodes.to/12z6zgh95bsg/Blur-PC.rar" },
+            { name: "Bully", price: 15000, cat: "PC", img: "https://i.postimg.cc/D0py3Fsq/wp1855698-bully-wallpapers.jpg", link: "https://gofile.io/d/41UQkD" },
+            { name: "Bus Simulator 18", price: 15000, cat: "PC", img: "https://i.postimg.cc/BnkL15jx/wp7040784-bus-simulator-wallpapers.jpg", link: "https://megadb.net/download" },
+            { name: "Call of Duty 2", price: 15000, cat: "PC", img: "https://i.postimg.cc/PqbXr1Z6/u-OYb3oa-call-of-duty-2-wallpaper.jpg", link: "https://buzzheavier.com/pra2ghw7ffy6" },
+            { name: "Devil May Cry 3", price: 15000, cat: "PC", img: "https://i.postimg.cc/XN1VJjG5/Vq-Dq4RS-devil-may-cry-3-wallpaper.jpg", link: "https://buzzheavier.com/v3zz741o6nv4" },
+            { name: "Hitman Blood Money", price: 15000, cat: "PC", img: "https://i.postimg.cc/QMDDPVPP/b-Xdp-EJt-hitman-blood-money-wallpaper.jpg", link: "https://buzzheavier.com/zpg8llxhtl4i" },
+            { name: "PES 17 Mod 26", price: 15000, cat: "PC", img: "https://i.postimg.cc/dQfYF5pV/wp15783839-efootball-2026-wallpapers.jpg", link: "https://gofile.io/d/sZeCU5" },
+{ name: "Resident Evil Rev. (PIN: Winlator 77)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/44Y3pHTV/wp3417400-resident-evil-revelation-wallpaper.jpg", link: "https://drive.usercontent.google.com/download?id=1tJP9RLcEIhj85M5-CXY2lhSQX2kuhESF" },
+{ name: "AC IV Black Flag (Pass: steamrip.com)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/DzC2Xnjq/wp5860329-assassins-creed-iv-black-flag-wallpapers.jpg", link: "https://buzzheavier.com/x05hezzbg7tn" },
+{ name: "COD 4 Modern Warfare", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/Ls0psv5N/wp3834070-cod4-wallpapers.jpg", link: "https://buzzheavier.com/0u1yl6ux9hjf" },
+            { name: "Call of Duty Ghost", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/VLjmFjZL/wp12684881-cod-mw-ghost-wallpapers.jpg", link: "https://buzzheavier.com/frv5wnsc2chd" },
+            { name: "Dead Space", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/JzrVcSBp/wp11842360-dead-space-remake-wallpapers.jpg", link: "https://buzzheavier.com/jqxor4qb2mq6" },
+            { name: "Devil May Cry 4", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/Vsnxyz9y/wp3004835-devil-may-cry-4-wallpaper-nero-and-dante.jpg", link: "https://buzzheavier.com/n42ceau5vruh" },
+            { name: "Far Cry Primal", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/JnJ2WQky/wp1896894-far-cry-primal-wallpapers.jpg", link: "https://buzzheavier.com/dxyf7jvyz7b0" },
+{ name: "FIFA 23 Legacy Ed.", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/6qMwm0rW/wp11851062-fifa-2023-ps5-wallpapers.jpg", link: "https://nswpedia.com/download/fifa-23-legacy-edition-41771" },
+            { name: "UFC (Mobile Edition)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/0yYph6z2/wp14997636-ufc-champion-wallpapers.jpg", link: "https://gofile.io/d/dns3NH" },
+            { name: "Street Outlaws", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/zDV0h72Y/wp6082170-gaming-zone-wallpapers.jpg", link: "https://buzzheavier.com/cx2ebjedmbpe" },
+            { name: "Dark Souls (Switch)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/2j19MwmP/wp14930336-dark-souls-iii-the-ringed-city-wallpapers.webp", link: "https://buffdrive.com/398" },
+            { name: "Sekiro Shadows Die Twice", price: 15000, cat: "PC", img: "https://i.postimg.cc/FsJ7XdWN/wp5385636-cinematic-gaming-wallpapers.jpg", link: "https://buzzheavier.com/bpf4xp9ptrlv" },
+            { name: "Sleeping Dogs", price: 15000, cat: "PC", img: "https://i.postimg.cc/TYM5L2FH/wp14833297-sleeping-dogs-wallpapers.webp", link: "https://buzzheavier.com/jgglyhqzkaqu" },
+             { name: "God of War II (PS2)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/BbyYN1Ry/wp9254852-god-of-war-ps2-wallpapers.jpg", link: "https://www.romspedia.com/roms/playstation-2/god-of-war-2" },
+            { name: "God of War I (PS2)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/85YmVgwZ/wp14761289-god-of-war-ps2-wallpapers.jpg", link: "https://www.romspedia.com/roms/playstation-2/god-of-war-usa" },
+            { name: "Downhill Domination", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/k54jrsqq/wp10785209-downhill-domination-wallpapers.jpg", link: "https://www.romspedia.com/roms/playstation-2/downhill-domination" },
+            { name: "NFS Most Wanted (PS2)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/sxR924d5/wp14837338-need-for-speed-most-wanted-iphone-wallpapers.webp", link: "https://www.romspedia.com/roms/playstation-2/need-for-speed-most-wanted-black-edition" },
+            { name: "PES 26 Summer Update", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/HLvP83Sy/PES-2026-PS2-Summer-Europa-League-Update.jpg", link: "https://www.mediafire.com/file/yq982ofdxc4568v/PES2026-Summer_Upd_EuropaLeague_WDf.7z/file" },
+            { name: "God Hand", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/63rWTWSL/FB-IMG-1763737905444.jpg", link: "https://www.1024tera.com/wap/share/filelist?surl=3PYbghkLvZ4zR0vIRfH1Sw" },
+            { name: "Resident Evil 4 (Skins MOD)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/2S3vrKbv/1763651771406.jpg", link: "https://www.mediafire.com/file/wjhopxslptceh46/PJGAMES.Resident.Evil.4.Jack.Krauser.Skins.MOD.7z/file" },
+            { name: "Avatar: The Game (PSP)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/tgdrYBJ1/1768111104395.jpg", link: "https://www.romsgames.net/playstation-portable-rom-james-camerons-avatar-the-game/" },
+            { name: "God of War II (Android Port)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/BbyYN1Ry/wp9254852-god-of-war-ps2-wallpapers.jpg", link: "https://www.mediafire.com/file/4bgxk1fl6wknq2g/gow210full-androidoyunclub.apk/file" },
+{ name: "Resident Evil 4", price: 15000, cat: "PC", img: "https://i.postimg.cc/R0X8t9xw/1768403853957.jpg", link: "https://gofile.io/d/3u0bxT" },
+            { name: "Call of Duty MW3", price: 15000, cat: "PC", img: "https://i.postimg.cc/dQgPZLBx/wp11815265-call-of-duty-2023-wallpapers.jpg", link: "https://buzzheavier.com/snp0632qh6p6" },
+            { name: "Black Myth Wukong", price: 15000, cat: "PC", img: "https://i.postimg.cc/c4GgbkH6/wp8221534-black-myth-wukong-wallpapers.jpg", link: "https://buzzheavier.com/s3ruruqbnwbo" },
+            { name: "Call of Duty MW (2019)", price: 15000, cat: "PC", img: "https://i.postimg.cc/L8wMxw4J/wp4517150-call-of-duty-modern-warfare-2019-wallpapers.jpg", link: "https://buzzheavier.com/fwsiayplkqp0" },
+            { name: "Call of Duty 2", price: 15000, cat: "PC", img: "https://i.postimg.cc/B6CkfV31/d-WXHkod-modern-warfare-2-wallpaper-hd.jpg", link: "https://buzzheavier.com/t2bixf01hl15" },
+            { name: "COD Black Ops Cold War", price: 15000, cat: "PC", img: "https://i.postimg.cc/bvm1Xx55/wp7306896-call-of-duty-black-op-cold-war-hd-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Clair Obscur Expedition", price: 15000, cat: "PC", img: "https://i.postimg.cc/ZRgpXmR5/wp15037158-clair-obscur-expedition-33-wallpapers.webp", link: "https://buzzheavier.com/alj1gwtjb4m6" },
+            { name: "FIFA 23", price: 15000, cat: "PC", img: "https://i.postimg.cc/MKLNtfxP/wp11326332-fifa-23-wallpapers.jpg", link: "https://buzzheavier.com/ztgaz2ian813" },
+            { name: "Horizon Forbidden West", price: 15000, cat: "PC", img: "https://i.postimg.cc/7ZJmmBZ5/wp9041300-horizon-forbidden-west-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Mortal Kombat 1", price: 15000, cat: "PC", img: "https://i.postimg.cc/LXStmgWF/wp1909308-mortal-kombat-x-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Need for Speed Heat", price: 15000, cat: "PC", img: "https://i.postimg.cc/3rZ6vbdF/wp4589779-need-for-speed-heat-wallpapers.png", link: "https://buzzheavier.com/iyfstaz5w8km" },
+            { name: "Ghost of Tsushima", price: 15000, cat: "PC", img: "https://i.postimg.cc/X7DW8s4q/wp14985675-ghost-of-tsushima-mobile-4k-wallpapers.webp", link: "https://datanodes.to/download" },
+            { name: "Gotham Knights", price: 15000, cat: "PC", img: "https://i.postimg.cc/8kB8bznF/1236200.jpg", link: "https://buzzheavier.com/38h3lc5ojvhs" },
+            { name: "Dead Space 2", price: 15000, cat: "PC", img: "https://i.postimg.cc/13Wsr3XB/e-Flb4C8-dead-space-2-wallpaper-hd.jpg", link: "https://buzzheavier.com/4fjhvqnzz841" },
+            { name: "F1 2021", price: 15000, cat: "PC", img: "https://i.postimg.cc/d01QbTgw/wp11254687-f1-game-wallpapers.jpg", link: "https://buzzheavier.com/gvdfs3hidw8l" },
+            { name: "The Last of Us Part 1", price: 15000, cat: "PC", img: "https://i.postimg.cc/RFJBDCK8/wp6830679-the-last-of-us-1-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Fallout 4", price: 15000, cat: "PC", img: "https://i.postimg.cc/x1V0147B/wp1922243-fallout-4-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "GTA V", price: 15000, cat: "PC", img: "https://i.postimg.cc/N0CRfqcy/wp15166750-gta-5-4k-iphone-wallpapers.webp", link: "https://datanodes.to/download" },
+            { name: "Vampyr", price: 15000, cat: "PC", img: "https://i.postimg.cc/K8cC84dP/1768679799004.jpg", link: "https://buzzheavier.com/dutq00so7l61" },
+            { name: "Cyberpunk 2077", price: 15000, cat: "PC", img: "https://i.postimg.cc/BbssRcmC/Cyberpunk-2077-PS4-Wallpaper-04.jpg", link: "https://datanodes.to/download" },
+            { name: "Euro Truck Simulator 2", price: 15000, cat: "PC", img: "https://i.postimg.cc/PfW5ghNB/wp2578415-euro-truck-simulator-2-wallpaper.jpg", link: "https://datanodes.to/download" },
+            { name: "Ferocious", price: 15000, cat: "PC", img: "https://i.postimg.cc/90zfywtv/wp13179267-dark-beast-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Company of Heroes", price: 15000, cat: "PC", img: "https://i.postimg.cc/rFKdr3fq/Company-Of-Heroes-Wallpaper-HD.jpg", link: "https://datanodes.to/download" },
+            { name: "Of Ash and Steel", price: 15000, cat: "PC", img: "https://i.postimg.cc/k4q6R5pk/images-3.jpg", link: "https://datanodes.to/download" },
+            { name: "Battlefield 6", price: 15000, cat: "PC", img: "https://i.postimg.cc/y8DF7WM9/wp15745450-battlefield-6-4k-wallpapers.png", link: "https://datanodes.to/download" },
+            { name: "Rise of the Tomb Raider", price: 15000, cat: "PC", img: "https://i.postimg.cc/XqmLKFFs/IMG-20260215-011736-243.jpg", link: "https://datanodes.to/download" },
+            { name: "God of War Ragnarok", price: 15000, cat: "PC", img: "https://i.postimg.cc/nzdC98X0/IMG-20260111-152210-797.jpg", link: "https://datanodes.to/download" },
+            { name: "Marvel Spider-Man", price: 15000, cat: "PC", img: "https://i.postimg.cc/1XdL28xd/wp8444980-marvels-spider-man-wallpapers.png", link: "https://datanodes.to/download" },
+            { name: "Days Gone", price: 15000, cat: "PC", img: "https://i.postimg.cc/QCn3D67v/wp2392872-days-gone-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "Detroit Become Human", price: 15000, cat: "PC", img: "https://i.postimg.cc/nVDJyjJx/wp15302087-connor-detroit-become-human-wallpapers.jpg", link: "https://datanodes.to/download" },
+            { name: "God of War I (Android Port)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/85YmVgwZ/wp14761289-god-of-war-ps2-wallpapers.jpg", link: "https://www.mediafire.com/file/lfhekezakexot1a/gow110full-androidoyunclub.apk/file" },
+            { name: "ALL PS2 GAMES (Library)", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/pLg9xXt5/wp13886043-ps2-4k-wallpapers.jpg", link: "https://www.romspedia.com/roms/playstation-2" },
+            { name: "FULL PACKAGE PS2", price: "5,000", cat: "Mobile", img: "https://i.postimg.cc/8C2C8yMc/wp13885815-ps2-4k-wallpapers.jpg", link: "https://drive.google.com/drive/mobile/folders/1D9WPT6TZVQgdzfUv-_h6bkfGf0kD9WUY" },
+            { name: "Tom Clancy's Ghost Recon", price: 15000, cat: "PC", img: "https://i.postimg.cc/dtkZDk5b/wp8788163-tom-clancys-splinter-cell-wallpapers.jpg", link: "https://buzzheavier.com/49xu0bo56vxh" },
+            { name: "Tom Clancy's Splinter Cell Blacklist", price: 15000, cat: "PC", img: "https://i.postimg.cc/dtkZDk5b/wp8788163-tom-clancys-splinter-cell-wallpapers.jpg", link: "https://buzzheavier.com/h1fg8niidp6p" },
+            { name: "Tomb Raider GOTY", price: 15000, cat: "PC", img: "https://i.postimg.cc/fLLR2JSs/wp5260534-tomb-raider-2013-desktop-wallpapers.jpg", link: "https://buzzheavier.com/tv83d0u0fh64" },
+            { name: "Resident Evil 4", price: 15000, cat: "PC", img: "https://i.postimg.cc/tgwB35Rc/wp3815683-resident-evil-2-remake-wallpapers.png", link: "https://gofile.io/d/SpTqBa" },
+            { name: "Resident Evil 2", price: 15000, cat: "PC", img: "https://i.postimg.cc/tgwB35Rc/wp3815683-resident-evil-2-remake-wallpapers.png", link: "https://buzzheavier.com/gq13u1gmj0vc" },
+            { name: "Resident Evil Revelations (Winlator)", price: 15000, cat: "Mobile", img: "https://i.postimg.cc/44Y3pHTV/wp3417400-resident-evil-revelation-wallpaper.jpg", link: "https://drive.usercontent.google.com/download?id=1tJP9RLcEIhj85M5-CXY2lhSQX2kuhESF&export=download&authuser=0" },
+            { name: "God of War 2", price: 5000, cat: "Mobile", img: "https://i.postimg.cc/BbyYN1Ry/wp9254852-god-of-war-ps2-wallpapers.jpg", link: "https://www.romspedia.com/roms/playstation-2/god-of-war-2" },
+            // ... (weka games zingine zote kama ulivyokuwa nazo)
+            { name: "Black Myth Wukong", price: 15000, cat: "PC", img: "https://i.postimg.cc/c4GgbkH6/wp8221534-black-myth-wukong-wallpapers.jpg", link: "https://buzzheavier.com/s3ruruqbnwbo" },
+            { name: "Resident Evil 4 Remake", price: 15000, cat: "PC", img: "https://i.postimg.cc/R0X8t9xw/1768403853957.jpg", link: "https://gofile.io/d/3u0bxT" }
+        ];
+
+
+let storeItems = JSON.parse(localStorage.getItem("storeItems")) || [
+    {
+        name: "Iphone 11 (Used)",
+        price: "450,000",
+        img: "https://i.ibb.co/TqcKLgLC/images-29.jpg",
+        contact: "https://wa.me/255786095758"
+    },
+    {
+        name: "Betting Tips Premium 🔥",
+        price: "2,000",
+        img: "https://i.ibb.co/R4hw970h/images-30.jpg",
+        contact: "https://wa.me/255786095758"
+    },
+    {
+        name: "Laptop HP Core i5",
+        price: "600,000",
+        img: "https://i.ibb.co/KpkNgGyX/images-31.jpg",
+        contact: "https://wa.me/255786095758"
+    }
+];
+
+        let activeLink = "";
+        let PINS = JSON.parse(localStorage.getItem("pins")) || [
+    { code: "5050", used: 0, max: 10, type: "CHEAP" },
+    { code: "1608", used: 0, max: 20, type: "PREMIUM" }
+];
+        const ADMIN_PASSWORD = "Chicolisto";   // Badilisha hii kuwa yako
+
+        // ====================== ORIGINAL FUNCTIONS ======================
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function renderStore(filter = 'all') {
+            const grid = document.getElementById('gamesGrid');
+            const title = document.getElementById('catTitle');
+            grid.innerHTML = "";
+            let filtered = filter === 'all' ? games : games.filter(g => g.cat === filter);
+            title.innerText = filter === 'all' ? 'Store Collection' : filter + ' Games';
+
+            filtered.forEach(game => {
+                const badge = game.cat === 'PC' ? 'bg-red-600' : (game.cat === 'Mobile' ? 'bg-green-600' : 'bg-blue-600');
+                grid.innerHTML += `
+                    <div class="game-card">
+                        <span class="badge-type ${badge}">${game.cat}</span>
+                        <img src="${game.img}" class="w-full aspect-[3/4] object-cover">
+                        <div class="p-3">
+                            <h3 class="text-[10px] font-bold uppercase truncate mb-2">${game.name}</h3>
+                            <div class="flex justify-between items-center">
+                                <span class="text-red-600 font-black text-[10px]">${game.price === 'FREE' ? 'FREE' : game.price.toLocaleString() + ' TZS'}</span>
+                                <button onclick="handleBtn('${game.link}', '${game.price}')" class="bg-white text-black px-3 py-1 rounded font-black text-[8px] uppercase hover:bg-red-600 hover:text-white transition">Get</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            if(filter !== 'all') toggleMenu();
+        }
+
+        function handleBtn(link, price, gameName = "Game") {
+    if (price === 'FREE') {
+        window.open(link);
+        return;
+    }
+
+    activeLink = link;
+
+    document.getElementById('paymentModal').style.display = 'flex';
+}
+
+        function openPinModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+    document.getElementById('pinModal').style.display = 'flex';
+}
+        function verifyPin() {
+    const input = document.getElementById('pinInput').value.trim();
+
+    const pinIndex = PINS.findIndex(p => p.code === input);
+
+    if (pinIndex === -1) {
+        alert("❌ Password sio sahihi!");
+        return;
+    }
+
+    const pin = PINS[pinIndex];
+
+    if ((pin.used || 0) >= (pin.max || 0)) {
+        alert(`⚠️ PIN ya ${pin.type} imeshaisha matumizi!`);
+        return;
+    }
+
+    pin.used += 1;
+
+    localStorage.setItem("pins", JSON.stringify(PINS));
+
+    alert(`✅ ${pin.type} PIN OK (${pin.used}/${pin.max})`);
+
+    window.open(activeLink, "_blank");
+}
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        }
+
+        function searchGame() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.game-card').forEach(card => {
+                const name = card.querySelector('h3').innerText.toLowerCase();
+                card.style.display = name.includes(val) ? 'block' : 'none';
+            });
+        }
+
+function renderMainStore() {
+    const grid = document.getElementById('gamesGrid');
+    const title = document.getElementById('catTitle');
+
+    title.innerText = "STORE YA BIASHARA";
+    grid.innerHTML = "";
+
+    storeItems.forEach(item => {
+        grid.innerHTML += `
+            <div class="game-card">
+                <img src="${item.img}" class="w-full aspect-[3/4] object-cover">
+
+                <div class="p-3">
+                    <h3 class="text-[10px] font-bold uppercase truncate mb-2">${item.name}</h3>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-yellow-400 font-black text-[10px]">
+                            ${item.price} TZS
+                        </span>
+
+                        <a href="${item.contact}" target="_blank"
+                        class="bg-green-500 text-black px-3 py-1 rounded font-black text-[8px] uppercase hover:bg-green-600 transition">
+                            Wasiliana
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+        // ====================== ADMIN DASHBOARD FUNCTIONS ======================
+        function openAdminDashboard() {
+            const pass = prompt("🔒 Ingiza Admin Password:");
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('adminModal').style.display = 'flex';
+                loadAdminGames();
+                loadPins();
+                switchTab(0);
+                loadStoreAdmin();
+            } else {
+                alert("Password si sahihi!");
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function switchTab(n) {
+    document.querySelectorAll('#tabContent > div').forEach(d => d.classList.add('hidden'));
+    document.getElementById('tab' + n).classList.remove('hidden');
+    
+    // Refresh store list kila unapofungua tab4
+    if (n === 4) {
+        loadStoreAdmin();
+    }
+}
+
+
+function loadAdminGames() {
+            const container = document.getElementById('adminGamesList');
+            container.innerHTML = '';
+            
+            games.forEach((game, i) => {
+                const div = document.createElement('div');
+                div.className = "bg-[#111] p-4 rounded-2xl flex justify-between items-center";
+                div.innerHTML = `
+                    <div>
+                        <strong>${game.name}</strong><br>
+                        <small class="text-gray-400">${game.cat} • ${game.price === 'FREE' ? 'FREE' : game.price.toLocaleString() + ' TZS'}</small>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editGame(${i})" class="bg-blue-600 text-xs px-4 py-2 rounded-xl">Badilisha</button>
+                        <button onclick="deleteGame(${i})" class="bg-red-600 text-xs px-4 py-2 rounded-xl">Futa</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+function addNewGame() {
+    const name = document.getElementById('newName').value.trim();
+    const price = document.getElementById('newPrice').value.trim();
+    const cat = document.getElementById('newCat').value;
+    const img = document.getElementById('newImg').value.trim();
+    const link = document.getElementById('newLink').value.trim();
+
+    // Validation
+    if (!name || !price || !cat || !img || !link) {
+        alert("⚠️ Tafadhali jaza taarifa zote!");
+        return;
+    }
+
+    // Format price
+    let finalPrice = price.toUpperCase() === "FREE" ? "FREE" : parseInt(price);
+
+    // Add to array
+    games.push({
+        name: name,
+        price: finalPrice,
+        cat: cat,
+        img: img,
+        link: link
+    });
+
+    // Save (optional - localStorage)
+    localStorage.setItem("games", JSON.stringify(games));
+
+    // Refresh UI
+    renderStore('all');
+    loadAdminGames();
+
+    // Clear inputs
+    document.getElementById('newName').value = "";
+    document.getElementById('newPrice').value = "";
+    document.getElementById('newImg').value = "";
+    document.getElementById('newLink').value = "";
+
+    alert("✅ Game imeongezwa kikamilifu!");
+}
+
+function deleteGame(i) {
+            if (confirm("Futa game?")) {
+                games.splice(i, 1);
+                loadAdminGames();
+                renderStore('all');
+            }
+        }
+
+        function editGame(i) {
+            const newPrice = prompt("Bei mpya?", games[i].price);
+            if (newPrice) {
+                games[i].price = parseInt(newPrice) || "FREE";
+                loadAdminGames();
+                renderStore('all');
+            }
+        }
+
+        function generateNewPin() {
+    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // chagua type
+    const type = prompt("Type ya PIN? (cheap / premium)");
+
+    let maxUse = 10;
+
+    if (type && type.toLowerCase() === "premium") {
+        maxUse = 20;
+    }
+
+    PINS.push({
+        code: pin,
+        used: 0,
+        max: maxUse,
+        type: type ? type.toUpperCase() : "CHEAP"
+    });
+
+    localStorage.setItem("pins", JSON.stringify(PINS));
+
+    loadPins();
+    alert(`PIN mpya (${type}): ${pin}`);
+}
+
+        function loadPins() {
+    document.getElementById('pinsList').innerHTML = PINS.map(p => `
+        <div class="bg-black p-3 rounded flex justify-between items-center">
+            <div>
+                <div class="font-bold">${p.code}</div>
+                <small class="text-gray-400">${p.type}</small>
+            </div>
+            <span class="text-yellow-400">
+                ${p.used}/${p.max}
+            </span>
+        </div>
+    `).join('');
+}
+
+        function sendAiCommand() {
+            const input = document.getElementById('aiInput');
+            if (!input.value) return;
+            const chat = document.getElementById('aiChat');
+            chat.innerHTML += `<div class="bg-red-600 p-3 rounded-2xl mb-3 ml-auto">${input.value}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+            input.value = "";
+            setTimeout(() => {
+                chat.innerHTML += `<div class="bg-gray-800 p-3 rounded-2xl">Nimepokea. Jaribu "Tengeneza PIN mpya" au "Ongeza game".</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 600);
+        }
+
+        function filterAdminGames() {
+            // Simple filter - unaweza kuiboresha
+            loadAdminGames();
+        }
+// ====================== AI ASSISTANT - ILIYOREKEBISHWA KABISA ======================
+const AI_ADMIN_PASSWORD = "ChicolistoAI";   // Badilisha kuwa password yako
+
+function openAiAssistant() {
+    const pass = prompt("🔒 Ingiza AI Password:");
+    if (pass === AI_ADMIN_PASSWORD) {
+        document.getElementById('aiModal').style.display = 'flex';
+        
+        const chat = document.getElementById('aiChat');
+        if (chat.children.length === 0) {
+            chat.innerHTML = `
+                <div class="bg-gray-800 p-4 rounded-2xl">
+                    👋 Karibu Admin!<br><br>
+                    Niko tayari kukusaidia. Jaribu kuandika chochote kama:<br>
+                    • Habari kaka<br>
+                    • Nataka kuweka game mpya<br>
+                    • Onyesha orodha ya games<br>
+                    • Tengeneza PIN mpya
+                </div>`;
+        }
+    } else {
+        alert("Password si sahihi! Wewe pekee unaweza kutumia AI hii.");
+    }
+}
+
+function closeAiModal() {
+    document.getElementById('aiModal').style.display = 'none';
+}
+
+function sendAiMessage() {
+    const input = document.getElementById('aiInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+
+    const chat = document.getElementById('aiChat');
+
+    // USER MESSAGE
+    chat.innerHTML += `<div class="bg-red-600 p-4 rounded-2xl ml-auto max-w-[80%]">${message}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+    input.value = "";
+
+    setTimeout(() => {
+        let reply = "Sijaelewa vizuri 🤔";
+
+        const lower = message.toLowerCase();
+
+        // ===== SALAM =====
+        if (lower.includes("habari") || lower.includes("hello")) {
+            reply = "Nipo kaka 🔥 niambie unataka kufanya nini?";
+        }
+
+        // ===== ONGEZA GAME =====
+        else if (lower.includes("ongeza game")) {
+            const name = prompt("Jina la game:");
+            const price = prompt("Bei:");
+            const cat = prompt("Category (Mobile/PC/Tools):");
+            const img = prompt("Image URL:");
+            const link = prompt("Download Link:");
+
+            if (name && price && cat && img && link) {
+                games.push({
+                    name,
+                    price: price === "FREE" ? "FREE" : parseInt(price),
+                    cat,
+                    img,
+                    link
+                });
+
+                renderStore('all');
+                reply = `✅ Game "${name}" imeongezwa kikamilifu!`;
+            } else {
+                reply = "❌ Umeacha baadhi ya taarifa.";
+            }
+        }
+
+        // ===== GENERATE PIN =====
+        else if (lower.includes("pin mpya") || lower.includes("generate pin")) {
+            const pin = Math.floor(100000 + Math.random() * 900000).toString();
+
+            PINS.push({
+    code: pin,
+    used: 0,
+    max: 10,
+    type: "CHEAP"
+});
+            loadPins();
+            reply = `🔑 PIN mpya: ${pin}`;
+        }
+
+        // ===== ONYESHA GAMES =====
+        else if (lower.includes("games") || lower.includes("orodha")) {
+            reply = `🎮 Una games ${games.length} kwenye store yako.`;
+        }
+
+        // ===== ONYESHA PINS =====
+        else if (lower.includes("onyesha pin")) {
+            reply = PINS.map(p => `🔑 ${p.code} (${p.downloads}/${p.maxDownloads})`).join("<br>");
+        }
+
+        // ===== BADILISHA BEI =====
+        else if (lower.includes("badilisha bei")) {
+            const name = prompt("Andika jina la game:");
+            const game = games.find(g => g.name.toLowerCase().includes(name.toLowerCase()));
+
+            if (game) {
+                const newPrice = prompt("Bei mpya:");
+                game.price = newPrice === "FREE" ? "FREE" : parseInt(newPrice);
+                renderStore('all');
+                reply = `✅ Bei ya ${game.name} imebadilika!`;
+            } else {
+                reply = "❌ Game haijapatikana.";
+            }
+        }
+
+        // ===== DEFAULT =====
+        chat.innerHTML += `<div class="bg-gray-800 p-4 rounded-2xl mr-auto max-w-[85%]">${reply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+
+    }, 600);
+}
+
+function addStore() {
+    const name = document.getElementById('sName').value.trim();
+    const price = document.getElementById('sPrice').value.trim();
+    const img = document.getElementById('sImg').value.trim();
+    const contact = document.getElementById('sLink').value.trim();
+
+    if (!name || !price || !img || !contact) {
+        alert("⚠️ Tafadhali jaza taarifa zote!");
+        return;
+    }
+
+    storeItems.push({
+        name: name,
+        price: price,
+        img: img,
+        contact: contact   // Badilisha hapa kuwa "contact"
+    });
+
+    localStorage.setItem("storeItems", JSON.stringify(storeItems));
+    loadStoreAdmin();
+
+    // Clear fields
+    document.getElementById('sName').value = "";
+    document.getElementById('sPrice').value = "";
+    document.getElementById('sImg').value = "";
+    document.getElementById('sLink').value = "";
+
+    alert("✅ Bidhaa imeongezwa kikamilifu!");
+}
+
+function loadStoreAdmin() {
+    const box = document.getElementById("storeAdminList");
+    box.innerHTML = "";
+
+    storeItems.forEach((item, i) => {
+        box.innerHTML += `
+        <div class="bg-black p-3 rounded flex justify-between items-center">
+            <div>
+                <b>${item.name}</b><br>
+                <small>${item.price} TZS</small>
+            </div>
+            <button onclick="deleteStore(${i})" class="bg-red-600 px-3 py-1 rounded text-xs">
+                Futa
+            </button>
+        </div>`;
+    });
+}
+
+function deleteStore(i) {
+    if (confirm("Una uhakika wa kufuta?")) {
+        storeItems.splice(i, 1);
+        localStorage.setItem("storeItems", JSON.stringify(storeItems));
+        loadStoreAdmin();
+    }
+}
+
+function renderStoreItems() {
+    const grid = document.getElementById('gamesGrid');
+    const title = document.getElementById('catTitle');
+
+    title.innerText = "STORE YA BIASHARA";
+    grid.innerHTML = "";
+
+    // Hakuna bidhaa
+    if (storeItems.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full text-center text-gray-500">
+                Hakuna bidhaa bado...
+            </div>
+        `;
+        return;
+    }
+
+    // Display bidhaa
+    storeItems.forEach(item => {
+        grid.innerHTML += `
+            <div class="game-card">
+                <img src="${item.img}" class="w-full aspect-[3/4] object-cover">
+
+                <div class="p-3">
+                    <h3 class="text-[10px] font-bold uppercase truncate mb-2">
+                        ${item.name}
+                    </h3>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-yellow-400 font-black text-[10px]">
+                            ${item.price} TZS
+                        </span>
+
+                        <a href="${item.link}" target="_blank"
+                        class="bg-green-500 text-black px-3 py-1 rounded font-black text-[8px] uppercase hover:bg-green-600 transition">
+                            Wasiliana
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    toggleMenu();
+}
+
+        // ====================== INIT ======================
+        window.addEventListener('load', () => {
+    updateHero();
+    renderStore('all');
+});
+    </script>
+</body>
+</html>
